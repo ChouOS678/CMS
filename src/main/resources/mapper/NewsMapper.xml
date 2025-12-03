@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cms.mapper.NewsMapper">
+    <resultMap id="BaseResultMap" type="com.cms.entity.News">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="author_id" property="authorId" jdbcType="BIGINT"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="target_club_id" property="targetClubId" jdbcType="BIGINT"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, title, content, author_id, type, target_club_id, publish_time
+    </sql>
+
+    <insert id="insert" parameterType="com.cms.entity.News" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO news (title, content, author_id, type, target_club_id, publish_time)
+        VALUES (#{title}, #{content}, #{authorId}, #{type}, #{targetClubId}, #{publishTime})
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM news
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM news
+    </select>
+
+    <update id="update" parameterType="com.cms.entity.News">
+        UPDATE news
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="type != null">type = #{type},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM news WHERE id = #{id}
+    </delete>
+</mapper>

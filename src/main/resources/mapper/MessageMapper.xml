@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cms.mapper.MessageMapper">
+    <resultMap id="BaseResultMap" type="com.cms.entity.Message">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="sender_id" property="senderId" jdbcType="BIGINT"/>
+        <result column="receiver_id" property="receiverId" jdbcType="BIGINT"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="is_read" property="isRead" jdbcType="BIT"/>
+        <result column="send_time" property="sendTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, sender_id, receiver_id, content, is_read, send_time
+    </sql>
+
+    <insert id="insert" parameterType="com.cms.entity.Message" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO messages (sender_id, receiver_id, content, is_read, send_time)
+        VALUES (#{senderId}, #{receiverId}, #{content}, #{isRead}, #{sendTime})
+    </insert>
+
+    <select id="selectBySenderAndReceiver" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM messages
+        WHERE (sender_id = #{senderId} AND receiver_id = #{receiverId})
+           OR (sender_id = #{receiverId} AND receiver_id = #{senderId})
+        ORDER BY send_time ASC
+    </select>
+
+    <update id="updateReadStatus">
+        UPDATE messages
+        SET is_read = 1
+        WHERE id = #{id}
+    </update>
+</mapper>
